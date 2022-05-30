@@ -38,10 +38,13 @@ class ViewController: UIViewController {
         return textView.text.firstIndex(of: "=") != nil
     }
     
+    var calcul = Calculation()
+    
+    
     // View Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
     }
     
     
@@ -58,29 +61,28 @@ class ViewController: UIViewController {
         textView.text.append(numberText)
     }
     
-    // si la phrase ne finit pas déjà par un opérateur, affiche +
-    @IBAction func tappedAdditionButton(_ sender: UIButton) {
+    
+    @IBAction  func tappedOperandButton(_ sender: UIButton){
+        guard let operand = sender.title(for: .normal) else { return }
         if canAddOperator {
-            textView.text.append(" + ")
+            switch operand {
+            case "+": textView.text.append(" + ")
+            case "-": textView.text.append(" - ")
+            case "*": textView.text.append(" * ")
+            case "/": textView.text.append(" / ")
+            default: textView.text.append(" erreur ")
+            }
         } else {
             let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
             alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             self.present(alertVC, animated: true, completion: nil)
         }
+        
     }
     
-    // si la phrase ne finit pas déjà par un opérateur, affiche -
-    @IBAction func tappedSubstractionButton(_ sender: UIButton) {
-        if canAddOperator {
-            textView.text.append(" - ")
-        } else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            self.present(alertVC, animated: true, completion: nil)
-        }
-    }
-
     @IBAction func tappedEqualButton(_ sender: UIButton) {
+        
+        
         // si la phrase ne finit pas par un opérateur
         guard expressionIsCorrect else {
             let alertVC = UIAlertController(title: "Zéro!", message: "Entrez une expression correcte !", preferredStyle: .alert)
@@ -95,31 +97,15 @@ class ViewController: UIViewController {
         }
         
         // Create local copy of operations
-        var operationsToReduce = elements
+        let elementsToReduce = elements
         
-        // Iterate over operations while an operand still here
-        // WTF ici?
-        while operationsToReduce.count >= 3 {
-            let left = Int(operationsToReduce[0])!
-            let operand = operationsToReduce[1]
-            let right = Int(operationsToReduce[2])!
-            // faire l'opération des trois premiers éléments
-            let result: Int
-            switch operand {
-            case "+": result = left + right
-            case "-": result = left - right
-            default: fatalError("Unknown operator !")
-            }
-            //Pour gérer les opération à plus de trois éléments
-            // une fois que les trois premiers éléments sont traités, les retirer de la phrase
-            operationsToReduce = Array(operationsToReduce.dropFirst(3))
-            // et ajouter le résultat de l'opération au début du tableau
-            operationsToReduce.insert("\(result)", at: 0)
-            // on reste dans la boucle tant qu'il reste des opération après les trois premières
-        }
+        
+        let result = self.calcul.calculation(elements: elementsToReduce)
+        
         // quand il ne reste plus qu'un résultat on l'affiche c'est le resultat final
-        textView.text.append(" = \(operationsToReduce.first!)")
+        textView.text.append(" = \(result )")
     }
-
+    
 }
 
+//  faire une seule fonction pour tous les opérateurs
