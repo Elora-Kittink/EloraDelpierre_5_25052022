@@ -68,7 +68,7 @@ class ViewController: UIViewController {
             switch operand {
             case "+": textView.text.append(" + ")
             case "-": textView.text.append(" - ")
-            case "*": textView.text.append(" * ")
+            case "X": textView.text.append(" X ")
             case "/": textView.text.append(" / ")
             default: textView.text.append(" erreur ")
             }

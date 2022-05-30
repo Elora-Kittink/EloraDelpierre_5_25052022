@@ -21,6 +21,8 @@ class Calculation {
             switch operand {
             case "+": result = left + right
             case "-": result = left - right
+            case "X": result = left * right
+            case "/": result = left / right
             default: fatalError("Unknown operator !")
             }
             //Pour gérer les opération à plus de trois éléments
