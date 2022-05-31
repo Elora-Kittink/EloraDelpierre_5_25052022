@@ -13,6 +13,7 @@
 		1FA43BDA224E569A00F565CB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FA43BD9224E569A00F565CB /* Assets.xcassets */; };
 		1FA43BDD224E569A00F565CB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FA43BDB224E569A00F565CB /* LaunchScreen.storyboard */; };
 		D55E0EB72846167F00662E9B /* CalculatorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55E0EB62846167F00662E9B /* CalculatorTest.swift */; };
+		D55E0EB928464C8D00662E9B /* Checks.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55E0EB828464C8D00662E9B /* Checks.swift */; };
 		D593DE6D283E279200A4289F /* Calculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D593DE6C283E279200A4289F /* Calculator.swift */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +38,7 @@
 		D55E0EAC2846152700662E9B /* P5 - CountOnMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "P5 - CountOnMeTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D55E0EB52846167E00662E9B /* P5 - CountOnMeTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "P5 - CountOnMeTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		D55E0EB62846167F00662E9B /* CalculatorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorTest.swift; sourceTree = "<group>"; };
+		D55E0EB828464C8D00662E9B /* Checks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Checks.swift; sourceTree = "<group>"; };
 		D593DE6C283E279200A4289F /* Calculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -101,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				D593DE6C283E279200A4289F /* Calculator.swift */,
+				D55E0EB828464C8D00662E9B /* Checks.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -233,6 +236,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D55E0EB928464C8D00662E9B /* Checks.swift in Sources */,
 				1FA43BD5224E569900F565CB /* ViewController.swift in Sources */,
 				1FA43BD3224E569900F565CB /* AppDelegate.swift in Sources */,
 				D593DE6D283E279200A4289F /* Calculator.swift in Sources */,

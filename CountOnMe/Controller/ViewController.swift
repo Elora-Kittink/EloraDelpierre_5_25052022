@@ -17,29 +17,25 @@ class ViewController: UIViewController {
         return textView.text.split(separator: " ").map { "\($0)" }
     }
     
-    // Error check computed variables
-    // vérifie que le dernier élément de la phrase ne soit pas un opérateur
-    var expressionIsCorrect: Bool {
-        return elements.last != "+" && elements.last != "-"
-    }
-    
-    // vérifie que la phrase contienne au moins 3 éléments
-    var expressionHaveEnoughElement: Bool {
-        return elements.count >= 3
-    }
-    
-    // exactement pareil que expressionIsCorrect ???
-    var canAddOperator: Bool {
-        return elements.last != "+" && elements.last != "-"
-    }
-    
-    // vérifie qu'il n'y a pas de = dans la phrase?
-    var expressionHaveResult: Bool {
-        return textView.text.firstIndex(of: "=") != nil
-    }
+//    // Error check computed variables
+//    // vérifie que le dernier élément de la phrase ne soit pas un opérateur
+//    var expressionDontEndWhithOperator: Bool {
+//        return elements.last != "+" && elements.last != "-"
+//    }
+//
+//    // vérifie que la phrase contienne au moins 3 éléments
+//    var expressionHaveEnoughElement: Bool {
+//        return elements.count >= 3
+//    }
+//
+//
+//    // vérifie qu'il n'y a pas de = dans la phrase?
+//    var expressionHaveResult: Bool {
+//        return textView.text.firstIndex(of: "=") != nil
+//    }
     
     var calcul = Calculation()
-    
+    var checks = Checks()
     
     // View Life cycles
     override func viewDidLoad() {
@@ -54,7 +50,7 @@ class ViewController: UIViewController {
             return
         }
         // si un résultat d'opération est affiché (avec =) alors vider l'affichage
-        if expressionHaveResult {
+        if checks.expressionHaveResult(textViewText: textView.text) {
             textView.text = ""
         }
         // afficher le numéro tapé
@@ -64,7 +60,7 @@ class ViewController: UIViewController {
     
     @IBAction  func tappedOperandButton(_ sender: UIButton){
         guard let operand = sender.title(for: .normal) else { return }
-        if canAddOperator {
+        if checks.expressionDontEndWhithOperator(elements: elements) {
             switch operand {
             case "+": textView.text.append(" + ")
             case "-": textView.text.append(" - ")
@@ -84,13 +80,13 @@ class ViewController: UIViewController {
         
         
         // si la phrase ne finit pas par un opérateur
-        guard expressionIsCorrect else {
+        guard checks.expressionDontEndWhithOperator(elements: elements) else {
             let alertVC = UIAlertController(title: "Zéro!", message: "Entrez une expression correcte !", preferredStyle: .alert)
             alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             return self.present(alertVC, animated: true, completion: nil)
         }
         // si la phrase contient au moins 3 éléments
-        guard expressionHaveEnoughElement else {
+        guard checks.expressionHaveEnoughElement(elements: elements) else {
             let alertVC = UIAlertController(title: "Zéro!", message: "Démarrez un nouveau calcul !", preferredStyle: .alert)
             alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             return self.present(alertVC, animated: true, completion: nil)
