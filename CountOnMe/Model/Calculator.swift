@@ -10,7 +10,7 @@ import Foundation
 
 class Calculation {
     
-    func calculation(elements: [String]) -> Double {
+    func calculation(elements: [String]) -> Double? {
         var elements = elements
         while elements.count >= 3 {
             let left = Int(elements[0])!
@@ -23,8 +23,10 @@ class Calculation {
             case "-": result = left - right
             case "X": result = left * right
             case "/": result = left / right
-            default: fatalError("Unknown operator !")
+            default: return nil
             }
+            
+           
             //Pour gérer les opération à plus de trois éléments
             // une fois que les trois premiers éléments sont traités, les retirer de la phrase
             elements = Array(elements.dropFirst(3))
@@ -33,6 +35,6 @@ class Calculation {
             // on reste dans la boucle tant qu'il reste des opération après les trois premières
         }
 
-        return Double(elements[0]) ?? 0
+        return Double(elements[0])
     }
 }

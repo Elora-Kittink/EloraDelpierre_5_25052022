@@ -17,23 +17,6 @@ class ViewController: UIViewController {
         return textView.text.split(separator: " ").map { "\($0)" }
     }
     
-//    // Error check computed variables
-//    // vérifie que le dernier élément de la phrase ne soit pas un opérateur
-//    var expressionDontEndWhithOperator: Bool {
-//        return elements.last != "+" && elements.last != "-"
-//    }
-//
-//    // vérifie que la phrase contienne au moins 3 éléments
-//    var expressionHaveEnoughElement: Bool {
-//        return elements.count >= 3
-//    }
-//
-//
-//    // vérifie qu'il n'y a pas de = dans la phrase?
-//    var expressionHaveResult: Bool {
-//        return textView.text.firstIndex(of: "=") != nil
-//    }
-    
     var calcul = Calculation()
     var checks = Checks()
     
@@ -69,37 +52,36 @@ class ViewController: UIViewController {
             default: textView.text.append(" erreur ")
             }
         } else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            self.present(alertVC, animated: true, completion: nil)
+            textView.text = "Erreur expressionDontEndWhithOperator"
         }
         
     }
     
     @IBAction func tappedEqualButton(_ sender: UIButton) {
         
-        
         // si la phrase ne finit pas par un opérateur
-        guard checks.expressionDontEndWhithOperator(elements: elements) else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Entrez une expression correcte !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            return self.present(alertVC, animated: true, completion: nil)
+        guard checks.expressionDontEndWhithOperator(elements: elements)
+        else {
+            textView.text = "Erreur expressionDontEndWhithOperator"
+            return
         }
         // si la phrase contient au moins 3 éléments
         guard checks.expressionHaveEnoughElement(elements: elements) else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Démarrez un nouveau calcul !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            return self.present(alertVC, animated: true, completion: nil)
+            textView.text = "Erreur expressionHaveEnoughElement"
+            return
         }
         
         // Create local copy of operations
         let elementsToReduce = elements
         
         
-        let result = self.calcul.calculation(elements: elementsToReduce)
-        
         // quand il ne reste plus qu'un résultat on l'affiche c'est le resultat final
-        textView.text.append(" = \(result )")
+        if let result = self.calcul.calculation(elements: elementsToReduce) {
+            textView.text.append(" = \(result )")
+        } else {
+            textView.text = "Erreur case nil"
+        }
+        
     }
     
 }

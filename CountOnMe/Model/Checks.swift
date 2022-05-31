@@ -18,7 +18,7 @@ class Checks {
     func expressionHaveEnoughElement(elements: [String]) -> Bool {
         return elements.count >= 3
     }
-    
+    // ajouter le mot erreur pour remettre a blanc après une erreur 
     func expressionHaveResult(textViewText: String) -> Bool {
         return textViewText.firstIndex(of: "=") != nil
     }

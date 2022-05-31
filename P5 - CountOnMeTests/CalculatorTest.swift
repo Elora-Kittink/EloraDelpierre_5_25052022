@@ -31,4 +31,16 @@ class CalculatorTest: XCTestCase {
 
         XCTAssertEqual(newCalculation.calculation(elements: ["4", "/", "2"]), 2)
     }
+    func testGivenNewCheck_WhenExpressionEndsWithOperator_ThenShouldReturnFalse(){
+        let newCheck = Checks()
+        XCTAssertFalse(newCheck.expressionDontEndWhithOperator(elements: ["4", "+", "2", "-" ]))
+        }
+    func testGivenNewCheck_WhenExpressionDoesntHaveEnoughElements_ThenShouldReturnFalse(){
+        let newCheck = Checks()
+        XCTAssertFalse(newCheck.expressionHaveEnoughElement(elements: ["4"]))
+    }
+    func testGivenNewCheck_WhenAResultIsDisplayed_ThenShouldReturnTrue(){
+        let newCheck = Checks()
+        XCTAssertTrue(newCheck.expressionHaveResult(textViewText: "4 + 2 = 6"))
+    }
 }
