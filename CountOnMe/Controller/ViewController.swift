@@ -33,7 +33,7 @@ class ViewController: UIViewController {
             return
         }
         // si un résultat d'opération est affiché (avec =) alors vider l'affichage
-        if checks.expressionHaveResult(textViewText: textView.text) {
+        if checks.expressionShouldBeBlanked(textViewText: textView.text) {
             textView.text = ""
         }
         // afficher le numéro tapé
@@ -52,6 +52,7 @@ class ViewController: UIViewController {
             default: textView.text.append(" erreur ")
             }
         } else {
+         
             textView.text = "Erreur expressionDontEndWhithOperator"
         }
         
@@ -62,11 +63,13 @@ class ViewController: UIViewController {
         // si la phrase ne finit pas par un opérateur
         guard checks.expressionDontEndWhithOperator(elements: elements)
         else {
+      
             textView.text = "Erreur expressionDontEndWhithOperator"
             return
         }
         // si la phrase contient au moins 3 éléments
         guard checks.expressionHaveEnoughElement(elements: elements) else {
+           
             textView.text = "Erreur expressionHaveEnoughElement"
             return
         }
@@ -79,6 +82,7 @@ class ViewController: UIViewController {
         if let result = self.calcul.calculation(elements: elementsToReduce) {
             textView.text.append(" = \(result )")
         } else {
+            error = true
             textView.text = "Erreur case nil"
         }
         

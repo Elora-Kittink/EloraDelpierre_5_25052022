@@ -41,6 +41,12 @@ class CalculatorTest: XCTestCase {
     }
     func testGivenNewCheck_WhenAResultIsDisplayed_ThenShouldReturnTrue(){
         let newCheck = Checks()
-        XCTAssertTrue(newCheck.expressionHaveResult(textViewText: "4 + 2 = 6"))
+        XCTAssertTrue(newCheck.expressionShouldBeBlanked(textViewText: "4 + 2 = 6"))
+    }
+    func testGivenAnErrorMessageDisplayed_WhenIStartTappingNewCalc_ThenTextViewTextShouldBeBlanked(){
+
+        let newChecks = Checks()
+        
+        XCTAssertTrue(newChecks.expressionShouldBeBlanked(textViewText: "Erreur unit test "))
     }
 }

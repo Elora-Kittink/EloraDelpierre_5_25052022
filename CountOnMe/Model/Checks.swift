@@ -19,7 +19,7 @@ class Checks {
         return elements.count >= 3
     }
     // ajouter le mot erreur pour remettre a blanc après une erreur 
-    func expressionHaveResult(textViewText: String) -> Bool {
-        return textViewText.firstIndex(of: "=") != nil
+    func expressionShouldBeBlanked(textViewText: String) -> Bool {
+        return textViewText.firstIndex(of: "=") != nil || textViewText.lowercased().contains("erreur")
     }
 }
