@@ -141,6 +141,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1FA43BF7224E569A00F565CB /* Build configuration list for PBXNativeTarget "P5 - CountOnMe" */;
 			buildPhases = (
+				D5949DD52847B72400544B35 /* SwiftLint */,
 				1FA43BCB224E569900F565CB /* Sources */,
 				1FA43BCC224E569900F565CB /* Frameworks */,
 				1FA43BCD224E569900F565CB /* Resources */,
@@ -230,6 +231,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D5949DD52847B72400544B35 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nif which swiftlint > /dev/null; then\n  swiftlint\nelse\n  echo \"error: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1FA43BCB224E569900F565CB /* Sources */ = {

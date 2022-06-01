@@ -12,14 +12,18 @@ class Checks {
     
     
     func expressionDontEndWhithOperator(elements: [String]) -> Bool {
-        return elements.last != "+" && elements.last != "-"
+        elements.last != "+" && elements.last != "-"
     }
     
     func expressionHaveEnoughElement(elements: [String]) -> Bool {
-        return elements.count >= 3
+        elements.count >= 3
     }
     // ajouter le mot erreur pour remettre a blanc après une erreur 
     func expressionShouldBeBlanked(textViewText: String) -> Bool {
-        return textViewText.firstIndex(of: "=") != nil || textViewText.lowercased().contains("erreur")
+        textViewText.contains("=") || textViewText.lowercased().contains("erreur")
+    }
+    
+    func divideByZero(textViewText: String) -> Bool {
+        textViewText.lowercased().contains("/0")
     }
 }

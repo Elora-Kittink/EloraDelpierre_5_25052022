@@ -9,12 +9,12 @@
 import UIKit
 
 class ViewController: UIViewController {
-    @IBOutlet weak var textView: UITextView!
-    @IBOutlet var numberButtons: [UIButton]!
+    @IBOutlet private weak var textView: UITextView!
+    @IBOutlet private var numberButtons: [UIButton]!
     
     // tableau des éléments de la ligne décomposée
     var elements: [String] {
-        return textView.text.split(separator: " ").map { "\($0)" }
+         textView.text.split(separator: " ").map { "\($0)" }
     }
     
     var calcul = Calculation()
@@ -23,12 +23,11 @@ class ViewController: UIViewController {
     // View Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        
     }
     
     
     // affiche le numéro tapé dans l'écran de la calculette
-    @IBAction func tappedNumberButton(_ sender: UIButton) {
+    @IBAction private func tappedNumberButton(_ sender: UIButton) {
         guard let numberText = sender.title(for: .normal) else {
             return
         }
@@ -41,7 +40,7 @@ class ViewController: UIViewController {
     }
     
     
-    @IBAction  func tappedOperandButton(_ sender: UIButton){
+    @IBAction private func tappedOperandButton(_ sender: UIButton) {
         guard let operand = sender.title(for: .normal) else { return }
         if checks.expressionDontEndWhithOperator(elements: elements) {
             switch operand {
@@ -52,25 +51,29 @@ class ViewController: UIViewController {
             default: textView.text.append(" erreur ")
             }
         } else {
-         
+            
             textView.text = "Erreur expressionDontEndWhithOperator"
         }
-        
     }
     
-    @IBAction func tappedEqualButton(_ sender: UIButton) {
+    @IBAction private func tappedEqualButton(_ sender: UIButton) {
         
         // si la phrase ne finit pas par un opérateur
         guard checks.expressionDontEndWhithOperator(elements: elements)
         else {
-      
+            
             textView.text = "Erreur expressionDontEndWhithOperator"
             return
         }
         // si la phrase contient au moins 3 éléments
         guard checks.expressionHaveEnoughElement(elements: elements) else {
-           
+            
             textView.text = "Erreur expressionHaveEnoughElement"
+            return
+        }
+        
+        guard checks.divideByZero(textViewText: textView.text) else {
+            textView.text = "Erreur impossible de diviser par zero"
             return
         }
         
@@ -82,12 +85,9 @@ class ViewController: UIViewController {
         if let result = self.calcul.calculation(elements: elementsToReduce) {
             textView.text.append(" = \(result )")
         } else {
-            error = true
             textView.text = "Erreur case nil"
         }
-        
     }
-    
 }
 
 //  faire une seule fonction pour tous les opérateurs

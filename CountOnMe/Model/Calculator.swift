@@ -26,7 +26,7 @@ class Calculation {
             default: return nil
             }
             
-           
+
             //Pour gérer les opération à plus de trois éléments
             // une fois que les trois premiers éléments sont traités, les retirer de la phrase
             elements = Array(elements.dropFirst(3))
