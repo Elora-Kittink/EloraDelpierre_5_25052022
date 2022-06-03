@@ -32,25 +32,25 @@ class CalculatorTest: XCTestCase {
         XCTAssertEqual(newCalculation.calculation(elements: ["4", "/", "2"]), 2)
     }
     func testGivenNewCheck_WhenExpressionEndsWithOperator_ThenShouldReturnFalse() {
-        let newCheck = Checks()
-        XCTAssertFalse(newCheck.expressionDontEndWhithOperator(elements: ["4", "+", "2", "-" ]))
+        let newCalculation = Calculation()
+        XCTAssertFalse(newCalculation.expressionDontEndWhithOperator(elements: ["4", "+", "2", "-" ]))
         }
     func testGivenNewCheck_WhenExpressionDoesntHaveEnoughElements_ThenShouldReturnFalse() {
-        let newCheck = Checks()
-        XCTAssertFalse(newCheck.expressionHaveEnoughElement(elements: ["4"]))
+        let newCalculation = Calculation()
+        XCTAssertFalse(newCalculation.expressionHaveEnoughElement(elements: ["4"]))
     }
     func testGivenNewCheck_WhenAResultIsDisplayed_ThenShouldReturnTrue() {
-        let newCheck = Checks()
-        XCTAssertTrue(newCheck.expressionShouldBeBlanked(textViewText: "4 + 2 = 6"))
+        let newCalculation = Calculation()
+        XCTAssertTrue(newCalculation.expressionShouldBeBlanked(textViewText: "4 + 2 = 6"))
     }
     func testGivenAnErrorMessageDisplayed_WhenIStartTappingNewCalc_ThenTextViewTextShouldBeBlanked() {
 
-        let newChecks = Checks()
+        let newCalculation = Calculation()
         
-        XCTAssertTrue(newChecks.expressionShouldBeBlanked(textViewText: "Erreur unit test "))
+        XCTAssertTrue(newCalculation.expressionShouldBeBlanked(textViewText: "Erreur unit test "))
     }
     func testGivenNewCalculation_TryingToDivide8ByZero_ThenCheckReturnTrue() {
-        let newCheck = Checks()
-        XCTAssertTrue(newCheck.divideByZero(textViewText: "8/0"))
+        let newCalculation = Calculation()
+        XCTAssertTrue(newCalculation.divideByZero(textViewText: "8/0"))
     }
 }

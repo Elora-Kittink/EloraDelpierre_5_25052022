@@ -8,86 +8,66 @@
 
 import UIKit
 
+public protocol ViewDelegate: AnyObject {
+    func updateScreen()
+    func showError()
+}
+
 class ViewController: UIViewController {
     @IBOutlet private weak var textView: UITextView!
     @IBOutlet private var numberButtons: [UIButton]!
     
     // tableau des éléments de la ligne décomposée
     var elements: [String] {
-         textView.text.split(separator: " ").map { "\($0)" }
+        textView.text.split(separator: " ").map { "\($0)" }
     }
     
     var calcul = Calculation()
-    var checks = Checks()
     
     // View Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        delegateSetup()
     }
     
+    func delegateSetup() {
+        calcul.delegate = self
+    }
     
     // affiche le numéro tapé dans l'écran de la calculette
     @IBAction private func tappedNumberButton(_ sender: UIButton) {
-        guard let numberText = sender.title(for: .normal) else {
-            return
-        }
-        // si un résultat d'opération est affiché (avec =) alors vider l'affichage
-        if checks.expressionShouldBeBlanked(textViewText: textView.text) {
-            textView.text = ""
-        }
-        // afficher le numéro tapé
-        textView.text.append(numberText)
-    }
-    
-    
-    @IBAction private func tappedOperandButton(_ sender: UIButton) {
-        guard let operand = sender.title(for: .normal) else { return }
-        if checks.expressionDontEndWhithOperator(elements: elements) {
-            switch operand {
-            case "+": textView.text.append(" + ")
-            case "-": textView.text.append(" - ")
-            case "X": textView.text.append(" X ")
-            case "/": textView.text.append(" / ")
-            default: textView.text.append(" erreur ")
-            }
-        } else {
-            
-            textView.text = "Erreur expressionDontEndWhithOperator"
+        if let elementToAdd = sender.title(for: .normal) {
+            calcul.addNumber(element: elementToAdd)
         }
     }
     
-    @IBAction private func tappedEqualButton(_ sender: UIButton) {
-        
-        // si la phrase ne finit pas par un opérateur
-        guard checks.expressionDontEndWhithOperator(elements: elements)
-        else {
-            
-            textView.text = "Erreur expressionDontEndWhithOperator"
-            return
-        }
-        // si la phrase contient au moins 3 éléments
-        guard checks.expressionHaveEnoughElement(elements: elements) else {
-            
-            textView.text = "Erreur expressionHaveEnoughElement"
-            return
-        }
-        
-        guard checks.divideByZero(textViewText: textView.text) else {
-            textView.text = "Erreur impossible de diviser par zero"
-            return
-        }
-        
-        // Create local copy of operations
-        let elementsToReduce = elements
-        
-        
-        // quand il ne reste plus qu'un résultat on l'affiche c'est le resultat final
-        if let result = self.calcul.calculation(elements: elementsToReduce) {
-            textView.text.append(" = \(result )")
-        } else {
-            textView.text = "Erreur case nil"
-        }
+    @IBAction private func tappedPlusButton() {
+        calcul.addOperator(element: "+")
+    }
+    @IBAction private func tappedMinusButton() {
+        calcul.addOperator(element: "-")
+    }
+    
+    @IBAction private func tappedMultiplyButton() {
+        calcul.addOperator(element: "X")
+    }
+    
+    @IBAction private func tappedDivideButton() {
+        calcul.addOperator(element: "/")
+    }
+    
+    @IBAction private func tappedEqualButton() {
+        calcul.calculation()
     }
 }
 
-//  faire une seule fonction pour tous les opérateurs
+extension ViewController: ViewDelegate {
+    
+    public func updateScreen() {
+        textView.text = calcul.elements.joined(separator: " ")
+    }
+    
+    public func showError() {
+        textView.text = "error"
+    }
+}
