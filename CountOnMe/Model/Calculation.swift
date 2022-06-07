@@ -41,7 +41,7 @@ class Calculation {
     
     func calculation() {
         if divideByZero(elements: elements) {
-            elements = ["erreur division par zéro impossible"]
+            elements = ["erreur"]
         } else {
             if expressionDontEndWhithOperator(elements: elements) && expressionHaveEnoughElement(elements: elements) {
                 var copyElements = elements
@@ -67,6 +67,8 @@ class Calculation {
                 }
                 elements.append("=")
                 elements.append("\(copyElements[0])")
+            } else {
+                elements = ["erreur"]
             }
         }
         print(elements)
