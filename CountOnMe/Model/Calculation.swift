@@ -40,30 +40,34 @@ class Calculation {
     }
     
     func calculation() {
-        if expressionDontEndWhithOperator(elements: elements) && expressionHaveEnoughElement(elements: elements) {
-            var copyElements = elements
-            while copyElements.count >= 3 {
-                let result: Int
-                if let left = Int(copyElements[0]), let right = Int(copyElements[2]) {
-                    let operand = copyElements[1]
-                    // faire l'opération des trois premiers éléments
-                    switch operand {
-                    case "+": result = left + right
-                    case "-": result = left - right
-                    case "X": result = left * right
-                    case "/": result = left / right
-                    default: return
+        if divideByZero(elements: elements) {
+            elements = ["erreur division par zéro impossible"]
+        } else {
+            if expressionDontEndWhithOperator(elements: elements) && expressionHaveEnoughElement(elements: elements) {
+                var copyElements = elements
+                while copyElements.count >= 3 {
+                    let result: Int
+                    if let left = Int(copyElements[0]), let right = Int(copyElements[2]) {
+                        let operand = copyElements[1]
+                        // faire l'opération des trois premiers éléments
+                        switch operand {
+                        case "+": result = left + right
+                        case "-": result = left - right
+                        case "X": result = left * right
+                        case "/": result = left / right
+                        default: return
+                        }
+                        //Pour gérer les opération à plus de trois éléments
+                        // une fois que les trois premiers éléments sont traités, les retirer de la phrase
+                        copyElements = Array(elements.dropFirst(3))
+                        // et ajouter le résultat de l'opération au début du tableau
+                        copyElements.insert("\(result)", at: 0)
+                        // on reste dans la boucle tant qu'il reste des opération après les trois premières
                     }
-                    //Pour gérer les opération à plus de trois éléments
-                    // une fois que les trois premiers éléments sont traités, les retirer de la phrase
-                    copyElements = Array(elements.dropFirst(3))
-                    // et ajouter le résultat de l'opération au début du tableau
-                    copyElements.insert("\(result)", at: 0)
-                    // on reste dans la boucle tant qu'il reste des opération après les trois premières
                 }
+                elements.append("=")
+                elements.append("\(copyElements[0])")
             }
-            elements.append("=")
-            elements.append("\(copyElements[0])")
         }
         print(elements)
         delegate?.updateScreen()
@@ -89,7 +93,8 @@ class Calculation {
         return numberArray.contains(lastElement)
     }
     
-    func divideByZero(textViewText: String) -> Bool {
-        textViewText.lowercased().contains("/0")
+    func divideByZero(elements: [String]) -> Bool {
+       let textViewText = elements.joined()
+       return textViewText.lowercased().contains("/0")
     }
 }
