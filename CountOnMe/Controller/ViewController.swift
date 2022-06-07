@@ -68,6 +68,7 @@ extension ViewController: ViewDelegate {
     }
     
     public func showError() {
+        print("erreur")
         textView.text = "error"
     }
 }
