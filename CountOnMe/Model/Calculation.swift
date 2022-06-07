@@ -20,7 +20,15 @@ class Calculation {
         if expressionShouldBeBlanked(elements: elements) {
             elements = []
         }
-        elements.append(element)
+        if addNumberAfterNumber(elements: elements) {
+            guard let firstNumber = elements.last else {
+                return
+            }
+            let secondNumber = element
+            elements[elements.count - 1] = ("\(firstNumber)\(secondNumber)")
+        } else {
+            elements.append(element)
+        }
         delegate?.updateScreen()
     }
     
@@ -73,9 +81,12 @@ class Calculation {
         elements.contains("=") || elements.contains("erreur")
     }
     
-    func addNumberAfterNumber(elements: String) -> Bool {
-        elements.last == "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
-        
+    func addNumberAfterNumber(elements: [String]) -> Bool {
+        let numberArray = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+        guard let lastElement = elements.last else {
+            return false
+        }
+        return numberArray.contains(lastElement)
     }
     
     func divideByZero(textViewText: String) -> Bool {
