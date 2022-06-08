@@ -33,10 +33,27 @@ class Calculation {
         delegate?.updateScreen()
     }
     
-    func addOperator(element: String) {
+    func addOperator(element: String, elements: [String]) {
+        if expressionDontEndWhithOperator(elements: elements) && !elements.isEmpty {
+            self.elements.append(element)
+        }
+        delegate?.updateScreen()
+    }
+    
+    func addComma(element: String) {
+        if expressionShouldBeBlanked(elements: elements) {
+            delegate?.showError()
+        }
         if expressionDontEndWhithOperator(elements: elements) {
             elements.append(element)
+        } else {
+            delegate?.showError()
         }
+        delegate?.updateScreen()
+    }
+    
+    func cleanTextView() {
+        elements = []
         delegate?.updateScreen()
     }
     
@@ -61,7 +78,7 @@ class Calculation {
                         }
                         //Pour gérer les opération à plus de trois éléments
                         // une fois que les trois premiers éléments sont traités, les retirer de la phrase
-                        copyElements = Array(elements.dropFirst(3))
+                        copyElements = Array(copyElements.dropFirst(3))
                         // et ajouter le résultat de l'opération au début du tableau
                         copyElements.insert("\(result)", at: 0)
                         // on reste dans la boucle tant qu'il reste des opération après les trois premières
@@ -99,6 +116,6 @@ class Calculation {
     
     func divideByZero(elements: [String]) -> Bool {
        let textViewText = elements.joined()
-       return textViewText.lowercased().contains("/0")
+       return textViewText.lowercased().contains("/0 ")
     }
 }

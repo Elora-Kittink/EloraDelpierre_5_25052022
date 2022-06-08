@@ -42,22 +42,28 @@ class ViewController: UIViewController {
     }
     
     @IBAction private func tappedPlusButton() {
-        calcul.addOperator(element: "+")
+        calcul.addOperator(element: "+", elements: elements)
     }
     @IBAction private func tappedMinusButton() {
-        calcul.addOperator(element: "-")
+        calcul.addOperator(element: "-", elements: elements)
     }
     
     @IBAction private func tappedMultiplyButton() {
-        calcul.addOperator(element: "X")
+        calcul.addOperator(element: "X", elements: elements)
     }
     
     @IBAction private func tappedDivideButton() {
-        calcul.addOperator(element: "/")
+        calcul.addOperator(element: "/", elements: elements)
     }
     
     @IBAction private func tappedEqualButton() {
         calcul.calculation()
+    }
+    @IBAction private func tappedACButton() {
+        calcul.cleanTextView()
+    }
+    @IBAction private func tappedButton() {
+        calcul.addComma(element: ",")
     }
 }
 
