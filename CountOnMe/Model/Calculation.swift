@@ -19,6 +19,7 @@ class Calculation {
     func addNumber(element: String) {
         if expressionShouldBeBlanked(elements: elements) {
             elements = []
+            delegate?.updateScreen()
         }
         if addNumberAfterNumber(elements: elements) {
             guard let firstNumber = elements.last else {
@@ -41,9 +42,8 @@ class Calculation {
     
     func calculation() {
         if divideByZero(elements: elements) {
+            elements = ["erreur"]
             delegate?.showError()
-            delegate?.updateScreen()
-//            elements = ["erreur"]
         } else {
             if expressionDontEndWhithOperator(elements: elements) && expressionHaveEnoughElement(elements: elements) {
                 var copyElements = elements
@@ -71,13 +71,10 @@ class Calculation {
                 elements.append("\(copyElements[0])")
                 delegate?.updateScreen()
             } else {
+                elements = ["erreur"]
                 delegate?.showError()
-                delegate?.updateScreen()
-//                elements = ["erreur"]
             }
-//            delegate?.updateScreen()
         }
-//        delegate?.updateScreen()
     }
     
     func expressionDontEndWhithOperator(elements: [String]) -> Bool {
