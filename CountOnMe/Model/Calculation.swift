@@ -104,7 +104,11 @@ class Calculation {
                     }
                 }
                 elements.append("=")
-                elements.append("\(copyElements[0])")
+                if String(copyElements[0].suffix(2)) == ".0" {
+                    copyElements[0] = String(copyElements[0].dropLast(2))
+                }
+                
+                elements.append(copyElements[0])
                 delegate?.updateScreen(result: stringElements)
             } else {
                 elements = ["erreur"]
