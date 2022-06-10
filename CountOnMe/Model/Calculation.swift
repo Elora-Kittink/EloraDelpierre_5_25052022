@@ -20,13 +20,10 @@ class Calculation {
         }
     }
     var stringElements: String {
-        "\(elements.joined())"
+        "\(elements.joined()) "
     }
     
     // on doit split avant et après chaque opérateur
-//    func manageSeparator() {
-//        stringElements.split(separator: " ").map { "\($0)" }
-//    }
     
     func addNumber(element: String) {
         if expressionShouldBeBlanked(elements: elements) {
@@ -42,14 +39,18 @@ class Calculation {
             print(secondNumber)
             elements[elements.count - 1] = ("\(firstNumber)\(secondNumber)")
         } else {
+            if elements.last == "0" {
+                return
+            }
             elements.append(element)
         }
         delegate?.updateScreen(result: stringElements)
     }
     
     func addOperator(element: String) {
-        if expressionDontEndWhithOperator(elements: elements) && !elements.isEmpty &&
-            !expressionShouldBeBlanked(elements: elements) {
+            if expressionDontEndWhithOperator(elements: elements)
+            && !elements.isEmpty
+            && !expressionShouldBeBlanked(elements: elements) {
             self.elements.append(element)
         }
         delegate?.updateScreen(result: stringElements)
@@ -57,13 +58,12 @@ class Calculation {
     
     // vérifier que le dernier element n'est pas un opérateur, qu'il n'y a pas de résultat affiché, qu'il n'y a pas déjà un virgule au nombre en question, que le tableau ne soit pas vide
     
-    func dontEndWithComma(elements: [String]) -> Bool {
-        elements.last != "."
-    }
-    
     func addComma(element: String) {
 
-        if expressionDontEndWhithOperator(elements: elements) && !expressionShouldBeBlanked(elements: elements) && dontEndWithComma(elements: elements) && !elements.isEmpty {
+            if expressionDontEndWhithOperator(elements: elements)
+            && !expressionShouldBeBlanked(elements: elements)
+            && expressionDontEndWithComma(elements: elements)
+            && !elements.isEmpty {
             guard let lastElement = elements.last else { return }
             elements[elements.count - 1] = "\(lastElement)\(element)"
         }
@@ -76,7 +76,6 @@ class Calculation {
     }
     
     func calculation() {
-        print(elements)
         if divideByZero(elements: elements) {
             elements = ["erreur"]
             delegate?.showError()
@@ -117,6 +116,10 @@ class Calculation {
         }
     }
     
+    func expressionDontEndWithComma(elements: [String]) -> Bool {
+        elements.last != "."
+    }
+    
     func expressionDontEndWhithOperator(elements: [String]) -> Bool {
         elements.last != "+" && elements.last != "-" && elements.last != "X"
         && elements.last != "/"
@@ -131,7 +134,7 @@ class Calculation {
     }
     
     func addNumberAfterNumber(elements: [String]) -> Bool {
-        let numberArray: [Character] = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."]
+        let numberArray: [Character] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "."]
         
         guard let lastElement = elements.last?.last else {
             return false
@@ -140,7 +143,6 @@ class Calculation {
     }
     
     func divideByZero(elements: [String]) -> Bool {
-       let textViewText = elements.joined()
-       return textViewText.lowercased().contains("/0 ")
+       stringElements.lowercased().contains("/0 ")
     }
 }
