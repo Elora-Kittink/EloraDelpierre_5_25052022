@@ -30,10 +30,9 @@ class Calculation {
             elements = []
             delegate?.updateScreen(result: stringElements)
         }
-        if addNumberAfterNumber(elements: elements) {
-            guard let firstNumber = elements.last else {
-                return
-            }
+        if let firstNumber = elements.last,
+           addNumberAfterNumber(lastElement: firstNumber) {
+            
             let secondNumber = element
             print(firstNumber)
             print(secondNumber)
@@ -56,7 +55,7 @@ class Calculation {
         delegate?.updateScreen(result: stringElements)
     }
     
-    // vérifier que le dernier element n'est pas un opérateur, qu'il n'y a pas de résultat affiché, qu'il n'y a pas déjà un virgule au nombre en question, que le tableau ne soit pas vide
+
     
     func addComma(element: String) {
 
@@ -133,13 +132,13 @@ class Calculation {
         elements.contains("=") || elements.contains("erreur")
     }
     
-    func addNumberAfterNumber(elements: [String]) -> Bool {
+    func addNumberAfterNumber(lastElement: String) -> Bool {
         let numberArray: [Character] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "."]
         
-        guard let lastElement = elements.last?.last else {
+        guard let lastCharOfLastElement = lastElement.last else {
             return false
         }
-        return numberArray.contains(lastElement)
+        return numberArray.contains(lastCharOfLastElement)
     }
     
     func divideByZero(elements: [String]) -> Bool {

@@ -18,6 +18,12 @@ class CalculatorTest: XCTestCase {
         newCalculation.calculation()
         XCTAssertEqual(newCalculation.elements.last, "4")
     }
+    func testGivenNewCalculation_WhenAddind2Plus2Plus2_ThenResultShouldBe6() {
+
+        newCalculation.elements = ["2", "+", "2", "+", "2"]
+        newCalculation.calculation()
+        XCTAssertEqual(newCalculation.elements.last, "6")
+    }
     func testGivenNewCalculation_WhenSubtracting4Minus2_ThenResultShouldBe2() {
         newCalculation.elements = ["4", "-", "2"]
         newCalculation.calculation()
@@ -75,12 +81,48 @@ class CalculatorTest: XCTestCase {
     }
     func testGivenAddingANumber_WhenThereIsAlreadyA2_ThenShoulReturnTrue() {
         newCalculation.elements = ["2"]
-        XCTAssertTrue(newCalculation.addNumberAfterNumber(elements: newCalculation.elements))
+        XCTAssertTrue(newCalculation.addNumberAfterNumber(lastElement: newCalculation.elements.last ?? "2"))
     }
 
     func testGivenNewCalculation_TryingToDivide8ByZero_ThenCheckReturn() {
         newCalculation.elements = ["4", "/", "0"]
         newCalculation.calculation()
         XCTAssertEqual(newCalculation.elements.last, "erreur")
+    }
+    // tester vigule après un chiffre
+    func testGivenAddingComma_When6Before_ThenShouldAddCommaAfter() {
+        newCalculation.elements = ["6"]
+        newCalculation.addComma(element: ".")
+        XCTAssertEqual(newCalculation.elements.last, "6.")
+    }
+    //tester virgule après un opérateur
+    func testGivenAddingComma_WhenPlusBefore_ThenShouldntAddComma() {
+        newCalculation.elements = ["6", "+"]
+        newCalculation.addComma(element: ".")
+        XCTAssertEqual(newCalculation.elements.last, "+")
+    }
+    // tester virgule en premier élément
+    func testGivenAddingComma_WhenItsFirst_ThenShouldntAddComma() {
+        newCalculation.elements = []
+        newCalculation.addComma(element: ".")
+        XCTAssertTrue(newCalculation.elements.isEmpty)
+    }
+    //tester virgule quand résultat affiché
+    func testGivenAddingComma_WhenResultDisplayed_ThenShouldntAddComma() {
+        newCalculation.elements = ["1", "+", "1", "=", "2"]
+        newCalculation.addComma(element: ".")
+        XCTAssertEqual(newCalculation.elements, ["1", "+", "1", "=", "2"])
+    }
+    func testGivenCleanFuncCalled_WhenSomethingInArrayElements_ThenShouldEmptyArray() {
+        newCalculation.elements = ["1", "+", "1"]
+        newCalculation.cleanTextView()
+        XCTAssertTrue(newCalculation.elements.isEmpty)
+    }
+//    addNumberAfterNumber quand le tableau est vide
+// ajouter un nombre après un 0
+    func testGivenAdding9_WhenElementBeforeIs0_ThenShouldntAddNumber() {
+        newCalculation.elements = ["1", "+", "0"]
+        newCalculation.addNumber(element: "9")
+        XCTAssertEqual(newCalculation.elements, ["1", "+", "0"])
     }
 }
