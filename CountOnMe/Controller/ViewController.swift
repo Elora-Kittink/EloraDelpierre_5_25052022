@@ -8,8 +8,8 @@
 
 import UIKit
 
-public protocol ViewDelegate: AnyObject {
-    func updateScreen()
+public protocol CalculationDelegate: AnyObject {
+    func updateScreen(result: String)
     func showError()
 }
 
@@ -18,9 +18,9 @@ class ViewController: UIViewController {
     @IBOutlet private var numberButtons: [UIButton]!
     
     // tableau des éléments de la ligne décomposée
-    var elements: [String] {
-        textView.text.split(separator: " ").map { "\($0)" }
-    }
+//    var elements: [String] {
+//        textView.text.split(separator: " ").map { "\($0)" }
+//    }
     
     var calcul = Calculation()
     
@@ -42,18 +42,18 @@ class ViewController: UIViewController {
     }
     
     @IBAction private func tappedPlusButton() {
-        calcul.addOperator(element: "+", elements: elements)
+        calcul.addOperator(element: "+")
     }
     @IBAction private func tappedMinusButton() {
-        calcul.addOperator(element: "-", elements: elements)
+        calcul.addOperator(element: "-")
     }
     
     @IBAction private func tappedMultiplyButton() {
-        calcul.addOperator(element: "X", elements: elements)
+        calcul.addOperator(element: "X")
     }
     
     @IBAction private func tappedDivideButton() {
-        calcul.addOperator(element: "/", elements: elements)
+        calcul.addOperator(element: "/")
     }
     
     @IBAction private func tappedEqualButton() {
@@ -63,14 +63,15 @@ class ViewController: UIViewController {
         calcul.cleanTextView()
     }
     @IBAction private func tappedButton() {
-        calcul.addComma(element: ",")
+        calcul.addComma(element: ".")
     }
 }
 
-extension ViewController: ViewDelegate {
+extension ViewController: CalculationDelegate {
     
-    public func updateScreen() {
-        textView.text = calcul.elements.joined(separator: " ")
+    
+    public func updateScreen(result: String) {
+        textView.text = result
     }
     
     public func showError() {

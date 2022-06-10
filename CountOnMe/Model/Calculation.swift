@@ -11,53 +11,72 @@ import UIKit
 
 class Calculation {
     
-     weak var delegate: ViewDelegate?
+     weak var delegate: CalculationDelegate?
     
     // tableau des éléments de la ligne décomposée
-    var elements: [String] = []
+    var elements: [String] = [] {
+        didSet {
+            delegate?.updateScreen(result: stringElements)
+        }
+    }
+    var stringElements: String {
+        "\(elements.joined())"
+    }
+    
+    // on doit split avant et après chaque opérateur
+//    func manageSeparator() {
+//        stringElements.split(separator: " ").map { "\($0)" }
+//    }
     
     func addNumber(element: String) {
         if expressionShouldBeBlanked(elements: elements) {
             elements = []
-            delegate?.updateScreen()
+            delegate?.updateScreen(result: stringElements)
         }
         if addNumberAfterNumber(elements: elements) {
             guard let firstNumber = elements.last else {
                 return
             }
             let secondNumber = element
+            print(firstNumber)
+            print(secondNumber)
             elements[elements.count - 1] = ("\(firstNumber)\(secondNumber)")
         } else {
             elements.append(element)
         }
-        delegate?.updateScreen()
+        delegate?.updateScreen(result: stringElements)
     }
     
-    func addOperator(element: String, elements: [String]) {
-        if expressionDontEndWhithOperator(elements: elements) && !elements.isEmpty {
+    func addOperator(element: String) {
+        if expressionDontEndWhithOperator(elements: elements) && !elements.isEmpty &&
+            !expressionShouldBeBlanked(elements: elements) {
             self.elements.append(element)
         }
-        delegate?.updateScreen()
+        delegate?.updateScreen(result: stringElements)
+    }
+    
+    // vérifier que le dernier element n'est pas un opérateur, qu'il n'y a pas de résultat affiché, qu'il n'y a pas déjà un virgule au nombre en question, que le tableau ne soit pas vide
+    
+    func dontEndWithComma(elements: [String]) -> Bool {
+        elements.last != "."
     }
     
     func addComma(element: String) {
-        if expressionShouldBeBlanked(elements: elements) {
-            delegate?.showError()
+
+        if expressionDontEndWhithOperator(elements: elements) && !expressionShouldBeBlanked(elements: elements) && dontEndWithComma(elements: elements) && !elements.isEmpty {
+            guard let lastElement = elements.last else { return }
+            elements[elements.count - 1] = "\(lastElement)\(element)"
         }
-        if expressionDontEndWhithOperator(elements: elements) {
-            elements.append(element)
-        } else {
-            delegate?.showError()
-        }
-        delegate?.updateScreen()
+        delegate?.updateScreen(result: stringElements)
     }
     
     func cleanTextView() {
         elements = []
-        delegate?.updateScreen()
+        delegate?.updateScreen(result: stringElements)
     }
     
     func calculation() {
+        print(elements)
         if divideByZero(elements: elements) {
             elements = ["erreur"]
             delegate?.showError()
@@ -65,8 +84,8 @@ class Calculation {
             if expressionDontEndWhithOperator(elements: elements) && expressionHaveEnoughElement(elements: elements) {
                 var copyElements = elements
                 while copyElements.count >= 3 {
-                    let result: Int
-                    if let left = Int(copyElements[0]), let right = Int(copyElements[2]) {
+                    let result: Double
+                    if let left = Double(copyElements[0]), let right = Double(copyElements[2]) {
                         let operand = copyElements[1]
                         // faire l'opération des trois premiers éléments
                         switch operand {
@@ -86,7 +105,7 @@ class Calculation {
                 }
                 elements.append("=")
                 elements.append("\(copyElements[0])")
-                delegate?.updateScreen()
+                delegate?.updateScreen(result: stringElements)
             } else {
                 elements = ["erreur"]
                 delegate?.showError()
@@ -95,7 +114,8 @@ class Calculation {
     }
     
     func expressionDontEndWhithOperator(elements: [String]) -> Bool {
-        elements.last != "+" && elements.last != "-"
+        elements.last != "+" && elements.last != "-" && elements.last != "X"
+        && elements.last != "/"
     }
     
     func expressionHaveEnoughElement(elements: [String]) -> Bool {
@@ -107,8 +127,9 @@ class Calculation {
     }
     
     func addNumberAfterNumber(elements: [String]) -> Bool {
-        let numberArray = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-        guard let lastElement = elements.last else {
+        let numberArray: [Character] = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."]
+        
+        guard let lastElement = elements.last?.last else {
             return false
         }
         return numberArray.contains(lastElement)
