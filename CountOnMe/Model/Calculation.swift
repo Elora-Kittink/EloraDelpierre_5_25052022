@@ -27,8 +27,8 @@ public class Calculation {
     
 // MARK: - checkings
     
-    private func expressionDontEndWithComma() -> Bool {
-        elements.last != "."
+    private func expressionDontContainComma() -> Bool {
+        !(elements.last?.contains(".") ?? true)
     }
     
     private func expressionDontEndWhithOperator() -> Bool {
@@ -86,7 +86,7 @@ public class Calculation {
     public func addComma(element: String) {
         if expressionDontEndWhithOperator()
             && !expressionContainEqualOrError()
-            && expressionDontEndWithComma()
+            && expressionDontContainComma()
             && !elements.isEmpty {
             guard let lastElement = elements.last else { return }
             elements[elements.count - 1] = "\(lastElement)\(element)"
