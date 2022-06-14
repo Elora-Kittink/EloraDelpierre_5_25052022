@@ -17,6 +17,7 @@ public class Calculation {
     var elements: [String] = [] {
         didSet {
             print(elements)
+            print(elements.last)
             delegate?.updateScreen(result: stringElements)
         }
     }
@@ -27,7 +28,7 @@ public class Calculation {
     
 // MARK: - checkings
     
-    private func expressionDontContainComma() -> Bool {
+    private func lastElementDontContainComma() -> Bool {
         !(elements.last?.contains(".") ?? true)
     }
     
@@ -86,7 +87,7 @@ public class Calculation {
     public func addComma(element: String) {
         if expressionDontEndWhithOperator()
             && !expressionContainEqualOrError()
-            && expressionDontContainComma()
+            && lastElementDontContainComma()
             && !elements.isEmpty {
             guard let lastElement = elements.last else { return }
             elements[elements.count - 1] = "\(lastElement)\(element)"
