@@ -9,9 +9,9 @@
 import Foundation
 import UIKit
 
-class Calculation {
+public class Calculation {
     
-    internal weak var delegate: CalculationDelegate?
+    public weak var delegate: CalculationDelegate?
     
     // tableau des éléments de la ligne décomposée
     var elements: [String] = [] {
@@ -26,7 +26,7 @@ class Calculation {
     
     // on doit split avant et après chaque opérateur
     
-    internal func addNumber(element: String) {
+    public func addNumber(element: String) {
         if expressionHaveResult() {
             elements = []
         }
@@ -43,17 +43,16 @@ class Calculation {
         }
     }
     
-    internal func addOperator(element: String) {
-        if expressionDontEndWhithOperator()
+    public func addOperator(element: String) {
+        guard expressionDontEndWhithOperator()
             && !elements.isEmpty
-            && !expressionHaveResult() {
-            self.elements.append(element)
-        }
+                && !expressionHaveResult() else { return }
+            elements.append(element)
     }
     
     
     
-    internal func addComma(element: String) {
+    public func addComma(element: String) {
         
         if expressionDontEndWhithOperator()
             && !expressionHaveResult()
@@ -64,48 +63,46 @@ class Calculation {
         }
     }
     
-    internal func cleanTextView() {
+    public func cleanTextView() {
         elements = []
     }
     
-    internal func calculation() {
-        if divideByZero() {
+   private func calculLoop() -> [String] {
+        var copyElements = elements
+        while copyElements.count >= 3 {
+            let result: Double
+            if let left = Double(copyElements[0]), let right = Double(copyElements[2]) {
+                let operand = copyElements[1]
+                switch operand {
+                case "+": result = left + right
+                case "-": result = left - right
+                case "X": result = left * right
+                case "/": result = left / right
+                default: return []
+                }
+                copyElements = Array(copyElements.dropFirst(3))
+                copyElements.insert("\(result)", at: 0)
+            }
+        }
+        return copyElements
+    }
+    
+    public func calculation() {
+       if divideByZero() {
             elements = ["erreur"]
             delegate?.showError()
-        } else {
+        }
             if expressionDontEndWhithOperator() && expressionHaveEnoughElement() {
-                var copyElements = elements
-                while copyElements.count >= 3 {
-                    let result: Double
-                    if let left = Double(copyElements[0]), let right = Double(copyElements[2]) {
-                        let operand = copyElements[1]
-                        // faire l'opération des trois premiers éléments
-                        switch operand {
-                        case "+": result = left + right
-                        case "-": result = left - right
-                        case "X": result = left * right
-                        case "/": result = left / right
-                        default: return
-                        }
-                        //Pour gérer les opération à plus de trois éléments
-                        // une fois que les trois premiers éléments sont traités, les retirer de la phrase
-                        copyElements = Array(copyElements.dropFirst(3))
-                        // et ajouter le résultat de l'opération au début du tableau
-                        copyElements.insert("\(result)", at: 0)
-                        // on reste dans la boucle tant qu'il reste des opération après les trois premières
-                    }
-                }
+                var copyElements = calculLoop()
                 elements.append("=")
                 if String(copyElements[0].suffix(2)) == ".0" {
                     copyElements[0] = String(copyElements[0].dropLast(2))
                 }
-                
                 elements.append(copyElements[0])
             } else {
                 elements = ["erreur"]
                 delegate?.showError()
             }
-        }
     }
     
     private func expressionDontEndWithComma() -> Bool {

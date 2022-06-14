@@ -45,11 +45,10 @@ class CalculatorTest: XCTestCase {
         XCTAssertEqual(newCalculation.elements[0], "erreur")
         XCTAssertTrue(newCalculation.expressionHaveResult())
         }
-    func testGivenNewCheck_WhenExpressionDoesntHaveEnoughElements_ThenShouldReturnFalse() {
+    func testGivenNewCheck_WhenExpressionDoesntHaveEnoughElements_ThenShouldReturnError() {
         newCalculation.elements = ["4"]
         newCalculation.calculation()
         XCTAssertEqual(newCalculation.elements[0], "erreur")
-        XCTAssertFalse(newCalculation.expressionHaveResult())
     }
     func testGivenNewCheck_WhenAResultIsDisplayed_ThenShouldReturnTrue() {
         newCalculation.elements = ["4", "+", "2", "=", "6"]
@@ -79,13 +78,28 @@ class CalculatorTest: XCTestCase {
         newCalculation.addNumber(element: "5")
         XCTAssertEqual(newCalculation.elements, ["5"])
     }
+    func testGivenAddingA5_WhenThereIsA0_ThenShouldntAdd5() {
+        newCalculation.elements = ["0"]
+        newCalculation.addNumber(element: "5")
+        XCTAssertEqual(newCalculation.elements, ["0"])
+    }
     func testGivenAddingANumber_WhenThereIsAlreadyA2_ThenShoulReturnTrue() {
         newCalculation.elements = ["2"]
         XCTAssertTrue(newCalculation.addNumberAfterNumber(lastElement: newCalculation.elements.last ?? "2"))
     }
 
-    func testGivenNewCalculation_TryingToDivide8ByZero_ThenCheckReturn() {
+    func testGivenNewCalculation_WhenTryingToDivide8ByZero_ThenCheckReturn() {
         newCalculation.elements = ["4", "/", "0"]
         newCalculation.calculation()
+    }
+    func testGivenAddingComma_WhenLastElementIs5_ThenShouldAddComma() {
+        newCalculation.elements = ["5"]
+        newCalculation.addComma(element: ".")
+        XCTAssertEqual(newCalculation.elements, ["5."])
+    }
+    func testGivenClearTheElementsArray_WhenThereIsA5_ThenShouldEmptyTheArray() {
+        newCalculation.elements = ["5"]
+        newCalculation.cleanTextView()
+        XCTAssertEqual(newCalculation.elements, [])
     }
 }
