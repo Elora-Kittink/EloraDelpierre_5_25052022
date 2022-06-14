@@ -11,31 +11,29 @@ import UIKit
 
 class Calculation {
     
-     weak var delegate: CalculationDelegate?
+    internal weak var delegate: CalculationDelegate?
     
     // tableau des éléments de la ligne décomposée
     var elements: [String] = [] {
         didSet {
+            print(elements)
             delegate?.updateScreen(result: stringElements)
         }
     }
-    var stringElements: String {
+    private var stringElements: String {
         "\(elements.joined()) "
     }
     
     // on doit split avant et après chaque opérateur
     
-    func addNumber(element: String) {
-        if expressionShouldBeBlanked(elements: elements) {
+    internal func addNumber(element: String) {
+        if expressionHaveResult() {
             elements = []
-            delegate?.updateScreen(result: stringElements)
         }
         if let firstNumber = elements.last,
            addNumberAfterNumber(lastElement: firstNumber) {
             
             let secondNumber = element
-            print(firstNumber)
-            print(secondNumber)
             elements[elements.count - 1] = ("\(firstNumber)\(secondNumber)")
         } else {
             if elements.last == "0" {
@@ -43,43 +41,39 @@ class Calculation {
             }
             elements.append(element)
         }
-        delegate?.updateScreen(result: stringElements)
     }
     
-    func addOperator(element: String) {
-            if expressionDontEndWhithOperator(elements: elements)
+    internal func addOperator(element: String) {
+        if expressionDontEndWhithOperator()
             && !elements.isEmpty
-            && !expressionShouldBeBlanked(elements: elements) {
+            && !expressionHaveResult() {
             self.elements.append(element)
         }
-        delegate?.updateScreen(result: stringElements)
     }
     
-
     
-    func addComma(element: String) {
-
-            if expressionDontEndWhithOperator(elements: elements)
-            && !expressionShouldBeBlanked(elements: elements)
-            && expressionDontEndWithComma(elements: elements)
+    
+    internal func addComma(element: String) {
+        
+        if expressionDontEndWhithOperator()
+            && !expressionHaveResult()
+            && expressionDontEndWithComma()
             && !elements.isEmpty {
             guard let lastElement = elements.last else { return }
             elements[elements.count - 1] = "\(lastElement)\(element)"
         }
-        delegate?.updateScreen(result: stringElements)
     }
     
-    func cleanTextView() {
+    internal func cleanTextView() {
         elements = []
-        delegate?.updateScreen(result: stringElements)
     }
     
-    func calculation() {
-        if divideByZero(elements: elements) {
+    internal func calculation() {
+        if divideByZero() {
             elements = ["erreur"]
             delegate?.showError()
         } else {
-            if expressionDontEndWhithOperator(elements: elements) && expressionHaveEnoughElement(elements: elements) {
+            if expressionDontEndWhithOperator() && expressionHaveEnoughElement() {
                 var copyElements = elements
                 while copyElements.count >= 3 {
                     let result: Double
@@ -107,7 +101,6 @@ class Calculation {
                 }
                 
                 elements.append(copyElements[0])
-                delegate?.updateScreen(result: stringElements)
             } else {
                 elements = ["erreur"]
                 delegate?.showError()
@@ -115,33 +108,29 @@ class Calculation {
         }
     }
     
-    func expressionDontEndWithComma(elements: [String]) -> Bool {
+    private func expressionDontEndWithComma() -> Bool {
         elements.last != "."
     }
     
-    func expressionDontEndWhithOperator(elements: [String]) -> Bool {
+    private func expressionDontEndWhithOperator() -> Bool {
         elements.last != "+" && elements.last != "-" && elements.last != "X"
         && elements.last != "/"
     }
     
-    func expressionHaveEnoughElement(elements: [String]) -> Bool {
+    private func expressionHaveEnoughElement() -> Bool {
         elements.count >= 3
     }
     // ajouter le mot erreur pour remettre a blanc après une erreur
-    func expressionShouldBeBlanked(elements: [String]) -> Bool {
+     func expressionHaveResult() -> Bool {
         elements.contains("=") || elements.contains("erreur")
     }
-    
-    func addNumberAfterNumber(lastElement: String) -> Bool {
-        let numberArray: [Character] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "."]
-        
-        guard let lastCharOfLastElement = lastElement.last else {
-            return false
-        }
-        return numberArray.contains(lastCharOfLastElement)
+// je veux que ça retourne true si on peut concaténer, et on peut concaténer si le lastElement est différent de + - X / 
+     func addNumberAfterNumber(lastElement: String) -> Bool {
+        let array: [String] = ["-", "+", "X", "/", "0"]
+        return !array.contains(lastElement)
     }
     
-    func divideByZero(elements: [String]) -> Bool {
-       stringElements.lowercased().contains("/0 ")
+    private func divideByZero() -> Bool {
+        stringElements.lowercased().contains("/0 ")
     }
 }

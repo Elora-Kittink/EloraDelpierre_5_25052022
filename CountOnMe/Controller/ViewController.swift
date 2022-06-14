@@ -17,11 +17,6 @@ class ViewController: UIViewController {
     @IBOutlet private weak var textView: UITextView!
     @IBOutlet private var numberButtons: [UIButton]!
     
-    // tableau des éléments de la ligne décomposée
-//    var elements: [String] {
-//        textView.text.split(separator: " ").map { "\($0)" }
-//    }
-    
     var calcul = Calculation()
     
     // View Life cycles
