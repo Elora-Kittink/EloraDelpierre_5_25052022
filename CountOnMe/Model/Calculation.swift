@@ -13,25 +13,56 @@ public class Calculation {
     
     public weak var delegate: CalculationDelegate?
     
-    // tableau des éléments de la ligne décomposée
+// array of elements display on the calculator, updated at each change
     var elements: [String] = [] {
         didSet {
             print(elements)
             delegate?.updateScreen(result: stringElements)
         }
     }
+// string of elements display on the calculator
     private var stringElements: String {
         "\(elements.joined()) "
     }
     
-    // on doit split avant et après chaque opérateur
+// MARK: - checkings
     
+    private func expressionDontEndWithComma() -> Bool {
+        elements.last != "."
+    }
+    
+    private func expressionDontEndWhithOperator() -> Bool {
+        elements.last != "+" && elements.last != "-" && elements.last != "X"
+        && elements.last != "/"
+    }
+    
+    private func expressionHaveEnoughElement() -> Bool {
+        elements.count >= 3
+    }
+
+     func expressionContainEqualOrError() -> Bool {
+        elements.contains("=") || elements.contains("erreur")
+    }
+
+    // concatene unless the last element is part of the list in the array
+     func concatenateWithElementBefore(lastElement: String) -> Bool {
+        let array: [String] = ["-", "+", "X", "/", "0"]
+        return !array.contains(lastElement)
+    }
+    
+    private func divideByZero() -> Bool {
+        stringElements.lowercased().contains("/0 ")
+    }
+    
+    // MARK: - functions called in the IBActions
+    
+// add concatenated to previous number or alone if not possible, cant add a number right after 0
     public func addNumber(element: String) {
-        if expressionHaveResult() {
-            elements = []
+        if expressionContainEqualOrError() {
+            cleanTextView()
         }
         if let firstNumber = elements.last,
-           addNumberAfterNumber(lastElement: firstNumber) {
+           concatenateWithElementBefore(lastElement: firstNumber) {
             
             let secondNumber = element
             elements[elements.count - 1] = ("\(firstNumber)\(secondNumber)")
@@ -43,19 +74,18 @@ public class Calculation {
         }
     }
     
+// make some checks before adding the operator to the element array
     public func addOperator(element: String) {
         guard expressionDontEndWhithOperator()
             && !elements.isEmpty
-                && !expressionHaveResult() else { return }
+                && !expressionContainEqualOrError() else { return }
             elements.append(element)
     }
-    
-    
-    
+
+// make some checks before to add comma concatenated with previous number
     public func addComma(element: String) {
-        
         if expressionDontEndWhithOperator()
-            && !expressionHaveResult()
+            && !expressionContainEqualOrError()
             && expressionDontEndWithComma()
             && !elements.isEmpty {
             guard let lastElement = elements.last else { return }
@@ -67,26 +97,9 @@ public class Calculation {
         elements = []
     }
     
-   private func calculLoop() -> [String] {
-        var copyElements = elements
-        while copyElements.count >= 3 {
-            let result: Double
-            if let left = Double(copyElements[0]), let right = Double(copyElements[2]) {
-                let operand = copyElements[1]
-                switch operand {
-                case "+": result = left + right
-                case "-": result = left - right
-                case "X": result = left * right
-                case "/": result = left / right
-                default: return []
-                }
-                copyElements = Array(copyElements.dropFirst(3))
-                copyElements.insert("\(result)", at: 0)
-            }
-        }
-        return copyElements
-    }
+    // MARK: - calculating functions
     
+// make some checks, launch the calculation, cleans up unnecessary commas
     public func calculation() {
        if divideByZero() {
             elements = ["erreur"]
@@ -105,29 +118,25 @@ public class Calculation {
             }
     }
     
-    private func expressionDontEndWithComma() -> Bool {
-        elements.last != "."
-    }
-    
-    private func expressionDontEndWhithOperator() -> Bool {
-        elements.last != "+" && elements.last != "-" && elements.last != "X"
-        && elements.last != "/"
-    }
-    
-    private func expressionHaveEnoughElement() -> Bool {
-        elements.count >= 3
-    }
-    // ajouter le mot erreur pour remettre a blanc après une erreur
-     func expressionHaveResult() -> Bool {
-        elements.contains("=") || elements.contains("erreur")
-    }
-// je veux que ça retourne true si on peut concaténer, et on peut concaténer si le lastElement est différent de + - X / 
-     func addNumberAfterNumber(lastElement: String) -> Bool {
-        let array: [String] = ["-", "+", "X", "/", "0"]
-        return !array.contains(lastElement)
-    }
-    
-    private func divideByZero() -> Bool {
-        stringElements.lowercased().contains("/0 ")
-    }
+// makes a loop that does the calculation of the first three elements,
+// until arriving at the final result
+    private func calculLoop() -> [String] {
+         var copyElements = elements
+         while copyElements.count >= 3 {
+             let result: Double
+             if let left = Double(copyElements[0]), let right = Double(copyElements[2]) {
+                 let operand = copyElements[1]
+                 switch operand {
+                 case "+": result = left + right
+                 case "-": result = left - right
+                 case "X": result = left * right
+                 case "/": result = left / right
+                 default: return []
+                 }
+                 copyElements = Array(copyElements.dropFirst(3))
+                 copyElements.insert("\(result)", at: 0)
+             }
+         }
+         return copyElements
+     }
 }

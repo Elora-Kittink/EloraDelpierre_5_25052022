@@ -43,7 +43,7 @@ class CalculatorTest: XCTestCase {
         newCalculation.elements = ["4", "+", "2", "-"]
         newCalculation.calculation()
         XCTAssertEqual(newCalculation.elements[0], "erreur")
-        XCTAssertTrue(newCalculation.expressionHaveResult())
+        XCTAssertTrue(newCalculation.expressionContainEqualOrError())
         }
     func testGivenNewCheck_WhenExpressionDoesntHaveEnoughElements_ThenShouldReturnError() {
         newCalculation.elements = ["4"]
@@ -52,11 +52,11 @@ class CalculatorTest: XCTestCase {
     }
     func testGivenNewCheck_WhenAResultIsDisplayed_ThenShouldReturnTrue() {
         newCalculation.elements = ["4", "+", "2", "=", "6"]
-        XCTAssertTrue(newCalculation.expressionHaveResult())
+        XCTAssertTrue(newCalculation.expressionContainEqualOrError())
     }
     func testGivenAnErrorMessageDisplayed_WhenIStartTappingNewCalc_ThenTextViewTextShouldBeBlanked() {
         newCalculation.elements = ["erreur"]
-        XCTAssertTrue(newCalculation.expressionHaveResult())
+        XCTAssertTrue(newCalculation.expressionContainEqualOrError())
     }
     func testGivenAddingA5_WhenThereIsAlreadyA4Plus_ThenShouldAdd5AfterThePlus() {
         newCalculation.elements = ["4", "+"]
@@ -85,7 +85,7 @@ class CalculatorTest: XCTestCase {
     }
     func testGivenAddingANumber_WhenThereIsAlreadyA2_ThenShoulReturnTrue() {
         newCalculation.elements = ["2"]
-        XCTAssertTrue(newCalculation.addNumberAfterNumber(lastElement: newCalculation.elements.last ?? "2"))
+        XCTAssertTrue(newCalculation.concatenateWithElementBefore(lastElement: newCalculation.elements.last ?? "2"))
     }
 
     func testGivenNewCalculation_WhenTryingToDivide8ByZero_ThenCheckReturn() {
