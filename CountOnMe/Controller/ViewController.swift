@@ -28,8 +28,7 @@ class ViewController: UIViewController {
     func delegateSetup() {
         calcul.delegate = self
     }
-    
-    // affiche le numéro tapé dans l'écran de la calculette
+
     @IBAction private func tappedNumberButton(_ sender: UIButton) {
         if let elementToAdd = sender.title(for: .normal) {
             calcul.addNumber(element: elementToAdd)
@@ -70,7 +69,6 @@ extension ViewController: CalculationDelegate {
     }
     
     public func showError() {
-        print("erreur")
         textView.text = "erreur"
     }
 }
