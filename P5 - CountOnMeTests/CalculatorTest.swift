@@ -9,97 +9,169 @@
 import XCTest
 @testable import P5___CountOnMe
 
+class ControllerSpy: CalculationDelegate {
+    var expectedResult: String = ""
+    var expectedError: String = ""
+    
+    func updateScreen(result: String) {
+        expectedResult = result
+    }
+    
+    func showError() {
+        expectedError = "erreur"
+    }
+}
+
 class CalculatorTest: XCTestCase {
-    let newCalculation = Calculation()
     
     func testGivenNewCalculation_WhenAddind2Plus2_ThenResultShouldBe4() {
 
-        newCalculation.elements = ["2", "+", "2"]
-        newCalculation.calculation()
-        XCTAssertEqual(newCalculation.elements.last, "4")
+        let (sut, controller) = makeSUT()
+        
+        sut.addNumber(element: "2")
+        sut.addOperator(element: "+")
+        sut.addNumber(element: "2")
+        sut.calculation()
+        
+        XCTAssertEqual(controller.expectedResult, "2+2=4")
     }
+    
     func testGivenNewCalculation_WhenAddind2Plus2Plus2_ThenResultShouldBe6() {
-
-        newCalculation.elements = ["2", "+", "2", "+", "2"]
-        newCalculation.calculation()
-        XCTAssertEqual(newCalculation.elements.last, "6")
+        let (sut, controller) = makeSUT()
+        
+        sut.addNumber(element: "2")
+        sut.addOperator(element: "+")
+        sut.addNumber(element: "2")
+        sut.addOperator(element: "+")
+        sut.addNumber(element: "2")
+        sut.calculation()
+        
+        XCTAssertEqual(controller.expectedResult, "2+2+2=6")
     }
     func testGivenNewCalculation_WhenSubtracting4Minus2_ThenResultShouldBe2() {
-        newCalculation.elements = ["4", "-", "2"]
-        newCalculation.calculation()
-        XCTAssertEqual(newCalculation.elements.last, "2")
+        let (sut, controller) = makeSUT()
+        
+        sut.addNumber(element: "4")
+        sut.addOperator(element: "-")
+        sut.addNumber(element: "4")
+        sut.calculation()
+
+        XCTAssertEqual(controller.expectedResult, "4-4=0")
     }
     func testGivenNewCalculation_WhenMultiply2By2_ThenResultShouldBe4() {
-        newCalculation.elements = ["2", "X", "2"]
-        newCalculation.calculation()
-        XCTAssertEqual(newCalculation.elements.last, "4")
+        let (sut, controller) = makeSUT()
+        
+        sut.addNumber(element: "2")
+        sut.addOperator(element: "X")
+        sut.addNumber(element: "2")
+        sut.calculation()
+
+        XCTAssertEqual(controller.expectedResult, "2X2=4")
     }
     func testGivenNewCalculation_WhenDividing4By2_ThenResultShouldBe2() {
-        newCalculation.elements = ["4", "/", "2"]
-        newCalculation.calculation()
-        XCTAssertEqual(newCalculation.elements.last, "2")
+        let (sut, controller) = makeSUT()
+        
+        sut.addNumber(element: "4")
+        sut.addOperator(element: "/")
+        sut.addNumber(element: "2")
+        sut.calculation()
+
+        XCTAssertEqual(controller.expectedResult, "4/2=2")
     }
     func testGivenNewCheck_WhenExpressionEndsWithOperator_ThenShouldReturnFalse() {
-        newCalculation.elements = ["4", "+", "2", "-"]
-        newCalculation.calculation()
-        XCTAssertEqual(newCalculation.elements[0], "erreur")
-        XCTAssertTrue(newCalculation.expressionContainEqualOrError())
+        let (sut, controller) = makeSUT()
+        
+        sut.addNumber(element: "4")
+        sut.addOperator(element: "+")
+        sut.addNumber(element: "2")
+        sut.addOperator(element: "-")
+        sut.calculation()
+
+        XCTAssertEqual(controller.expectedError, "erreur")
         }
     func testGivenNewCheck_WhenExpressionDoesntHaveEnoughElements_ThenShouldReturnError() {
-        newCalculation.elements = ["4"]
-        newCalculation.calculation()
-        XCTAssertEqual(newCalculation.elements[0], "erreur")
+        let (sut, controller) = makeSUT()
+        
+        sut.addNumber(element: "4")
+        sut.calculation()
+
+        XCTAssertEqual(controller.expectedError, "erreur")
     }
-    func testGivenNewCheck_WhenAResultIsDisplayed_ThenShouldReturnTrue() {
-        newCalculation.elements = ["4", "+", "2", "=", "6"]
-        XCTAssertTrue(newCalculation.expressionContainEqualOrError())
+    func testGivenNewCheck_WhenAResultIsDisplayed_ThenShouldDeletePreviousResult() {
+        let (sut, controller) = makeSUT()
+        
+        sut.addNumber(element: "4")
+        sut.addOperator(element: "+")
+        sut.addNumber(element: "2")
+        sut.calculation()
+        XCTAssertEqual(controller.expectedResult, "4+2=6")
+        sut.addNumber(element: "5")
+        sut.addOperator(element: "-")
+
+        XCTAssertEqual(controller.expectedResult, "5-")
     }
     func testGivenAnErrorMessageDisplayed_WhenIStartTappingNewCalc_ThenTextViewTextShouldBeBlanked() {
-        newCalculation.elements = ["erreur"]
-        XCTAssertTrue(newCalculation.expressionContainEqualOrError())
-    }
-    func testGivenAddingA5_WhenThereIsAlreadyA4Plus_ThenShouldAdd5AfterThePlus() {
-        newCalculation.elements = ["4", "+"]
-        newCalculation.addNumber(element: "5")
-        XCTAssertEqual(newCalculation.elements.last, "5")
-    }
-    func testGivenAddingAPlus_WhenThereIsAlreadyA5_ThenShouldAddPusAfterThe4() {
-        newCalculation.elements = ["5"]
-        newCalculation.addOperator(element: "+")
-        XCTAssertEqual(newCalculation.elements.last, "+")
-    }
-    func testGivenAddingA5_WhenThereIsAlreadyA1_ThenShouldAdd15() {
-        newCalculation.elements = ["1"]
-        newCalculation.addNumber(element: "5")
-        XCTAssertEqual(newCalculation.elements.last, "15")
-    }
-    func testGivenAddingA5_WhenThereIsAlreadyAResult_ThenShouldDeleteResult() {
-        newCalculation.elements = ["1", "+", "1", "=", "2"]
-        newCalculation.addNumber(element: "5")
-        XCTAssertEqual(newCalculation.elements, ["5"])
+        let (sut, controller) = makeSUT()
+        
+        sut.addNumber(element: "4")
+        sut.addOperator(element: "+")
+        sut.calculation()
+        XCTAssertEqual(controller.expectedError, "erreur")
+        sut.addNumber(element: "5")
+        sut.addOperator(element: "-")
+
+        XCTAssertEqual(controller.expectedResult, "5-")
     }
     func testGivenAddingA5_WhenThereIsA0_ThenShouldntAdd5() {
-        newCalculation.elements = ["0"]
-        newCalculation.addNumber(element: "5")
-        XCTAssertEqual(newCalculation.elements, ["0"])
+        let (sut, controller) = makeSUT()
+        
+        sut.addNumber(element: "0")
+        sut.addNumber(element: "5")
+
+        XCTAssertEqual(controller.expectedResult, "0")
     }
     func testGivenAddingANumber_WhenThereIsAlreadyA2_ThenShoulReturnTrue() {
-        newCalculation.elements = ["2"]
-        XCTAssertTrue(newCalculation.concatenateWithElementBefore(lastElement: newCalculation.elements.last ?? "2"))
+        let (sut, controller) = makeSUT()
+        
+        sut.addNumber(element: "2")
+        sut.addNumber(element: "5")
+
+        XCTAssertEqual(controller.expectedResult, "25")
     }
 
     func testGivenNewCalculation_WhenTryingToDivide8ByZero_ThenCheckReturn() {
-        newCalculation.elements = ["4", "/", "0"]
-        newCalculation.calculation()
+        let (sut, controller) = makeSUT()
+        
+        sut.addNumber(element: "8")
+        sut.addOperator(element: "/")
+        sut.addNumber(element: "0")
+        sut.calculation()
+
+        XCTAssertEqual(controller.expectedError, "erreur")
     }
     func testGivenAddingComma_WhenLastElementIs5_ThenShouldAddComma() {
-        newCalculation.elements = ["5"]
-        newCalculation.addComma(element: ".")
-        XCTAssertEqual(newCalculation.elements, ["5."])
+        
+        let (sut, controller) = makeSUT()
+        
+        sut.addNumber(element: "5")
+        sut.addComma(element: ".")
+
+        XCTAssertEqual(controller.expectedResult, "5.")
     }
     func testGivenClearTheElementsArray_WhenThereIsA5_ThenShouldEmptyTheArray() {
-        newCalculation.elements = ["5"]
-        newCalculation.cleanTextView()
-        XCTAssertEqual(newCalculation.elements, [])
+        
+        let (sut, controller) = makeSUT()
+        
+        sut.addNumber(element: "5")
+        sut.cleanTextView()
+
+        XCTAssertEqual(controller.expectedResult, "")
+    }
+    
+    func makeSUT() -> (model: Calculation, controller: ControllerSpy) {
+        let sut = Calculation()
+        let controller = ControllerSpy()
+        sut.delegate = controller
+        return (sut, controller)
     }
 }
